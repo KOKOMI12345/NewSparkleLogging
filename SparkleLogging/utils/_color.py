@@ -7,16 +7,9 @@ class _Color:
     blue = 34
     magenta = 35
     cyan = 36
+    write = 37
     grey = 90
-    _dict = {
-        "red": red,
-        "green": green,
-        "yellow": yellow,
-        "blue": blue,
-        "magenta": magenta,
-        "cyan": cyan,
-        "grey": grey
-    }
+    background_red = 41
 
 
 class Color:
@@ -24,13 +17,13 @@ class Color:
 
     @classmethod
     def render(cls,string:str,color:str) -> str:
-        if color.startswith("bg_"):
+        if color.startswith("bd_"):
            color = color[3:]
-           return cls.BaseStr % (1,_Color._dict[color],string)
+           return cls.BaseStr % (1,_Color.__dict__[color],string)
         else:
-            return cls.BaseStr % (0, _Color._dict[color], string)
+            return cls.BaseStr % (0, _Color.__dict__[color], string)
     
 
 if __name__ == '__main__':
-    test = Color.render("test","bg_grey")
+    test = Color.render("test","bd_background_red")
     print(test)
