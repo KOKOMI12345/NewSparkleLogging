@@ -7,7 +7,6 @@ class Logger:
     def __init__(self,
     name: str = "main",
     level = Levels.ON,
-    colorMode: bool = False,
     colorLevel: dict[Level, str] = {
         Levels.TRACE: "bd_blue",
         Levels.DEBUG: "bd_grey",
@@ -18,7 +17,6 @@ class Logger:
     }
     ) -> None:
         self.name = name
-        self.colorMode = colorMode
         self.level = level
         self.avaliable_lvl = _nameToLevel
         self.handlers: list[Handler] = []

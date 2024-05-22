@@ -9,13 +9,25 @@ class LogManager:
     lock = threading.Lock()
 
     @classmethod
-    def GetLogger(cls, name:str,level: Level = Levels.DEBUG ,colorize: bool = True):
+    def GetLogger(cls, 
+        name:str,
+        level: Level = Levels.DEBUG ,
+        colorMode:bool = True,
+        colorLevel: dict[Level, str] = {
+        Levels.TRACE: "bd_blue",
+        Levels.DEBUG: "bd_grey",
+        Levels.INFO: "bd_cyan",
+        Levels.WARNING: "bd_yellow",
+        Levels.ERROR: "bd_red",
+        Levels.FATAL: "bd_background_red",
+    }
+        ):
         with cls.lock:
             logger = next((logger for logger in cls.loggers if logger.name == name),None)
             if logger is None:
-                logger = Logger(name,level, colorize)
+                logger = Logger(name,level,colorLevel=colorLevel)
                 console = StreamHandler()
-                console.setFormatter(Formatter("{timestamp} | {level:<7} | {threadName} | {name}.{funcName} | {filename}:{lineno} - {message}"))
+                console.setFormatter(Formatter(colorMode=colorMode,fmt="{timestamp} | {level:<7} | {threadName} | {name}.{funcName} | {filename}:{lineno} - {message}"))
                 logger.addHandler(console)
                 cls.loggers.add(logger)
                 return logger
