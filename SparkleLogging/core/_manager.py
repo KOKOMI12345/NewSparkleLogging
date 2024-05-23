@@ -14,8 +14,8 @@ class LogManager:
         level: Level = Levels.DEBUG ,
         colorMode:bool = True,
         colorLevel: dict[Level, str] = {
-        Levels.TRACE: "bd_blue",
-        Levels.DEBUG: "bd_grey",
+        Levels.TRACE: "bd_grey",
+        Levels.DEBUG: "bd_blue",
         Levels.INFO: "bd_cyan",
         Levels.WARNING: "bd_yellow",
         Levels.ERROR: "bd_red",

@@ -4,7 +4,7 @@ from SparkleLogging.core._level import _levelToName
 from SparkleLogging.utils._color import Color
 
 class Formatter:
-    def __init__(self,colorMode:bool, fmt: str = "{timestamp} | {level:<7} | {threadName} | {name}.{funcName} | {filename}:{lineno} - {message}") -> None:
+    def __init__(self,colorMode:bool = False, fmt: str = "{timestamp} | {level:<7} | {threadName} | {name}.{funcName} | {filename}:{lineno} - {message}") -> None:
         self._fmt = fmt
         self.colorMode = colorMode
 
@@ -19,7 +19,7 @@ class Formatter:
         level: Level, 
         color: str,
         ) -> str:
-        timestamp = dt.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = f"{dt.now().strftime('%Y-%m-%d %H:%M:%S')}.{dt.now().microsecond // 1000:03d}"
         formatted_msg = self._fmt.format(
             timestamp=timestamp,
             level=_levelToName[level],

@@ -8,8 +8,8 @@ class Logger:
     name: str = "main",
     level = Levels.ON,
     colorLevel: dict[Level, str] = {
-        Levels.TRACE: "bd_blue",
-        Levels.DEBUG: "bd_grey",
+        Levels.TRACE: "bd_grey",
+        Levels.DEBUG: "bd_blue",
         Levels.INFO: "bd_cyan",
         Levels.WARNING: "bd_yellow",
         Levels.ERROR: "bd_red",
@@ -19,11 +19,13 @@ class Logger:
         self.name = name
         self.level = level
         self.avaliable_lvl = _nameToLevel
-        self.handlers: list[Handler] = []
+        self.handlers: set[Handler] = set()
         self.colorLevel = colorLevel
+        self.lock = threading.Lock()
 
     def addHandler(self, handler: Handler) -> None:
-        self.handlers.append(handler)
+        with self.lock:
+           self.handlers.add(handler)
 
     def _log(self, level: Level, message: AnyStr, color: str, **kwargs) -> None:
         if not self.handlers:
