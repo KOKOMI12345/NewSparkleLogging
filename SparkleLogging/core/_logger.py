@@ -43,6 +43,12 @@ class Logger:
         except Exception as e:
             stderr.write(f"Error: {e}\n")
 
+    def close(self) -> None:
+        for handler in self.handlers:
+            handler.close()
+
+    def log(self, level: Level, message: AnyStr, **kwargs) -> None:
+        self._log(level, message, self.colorLevel[level], **kwargs) #type: ignore
             
     def trace(self, message: AnyStr, **kwargs) -> None:
         self._log(Levels.TRACE, message, self.colorLevel[Levels.TRACE], **kwargs) # type: ignore

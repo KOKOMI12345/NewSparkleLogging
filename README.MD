@@ -28,43 +28,6 @@ logger.fatal("test")
 
 ```
 
-当然,也有更多功能,不过,配置过于麻烦,不是特别建议
-
-```python
-from SparkleLogging.core._level import Levels
-from SparkleLogging.utils._types import Level
-from SparkleLogging.core._handler import StreamHandler , Formatter
-from SparkleLogging.core._logger import Logger
-
-colorLevel: dict[Level, str] = {
-Levels.TRACE: "bd_grey",
-Levels.DEBUG: "bd_blue",
-Levels.INFO: "bd_cyan",
-Levels.WARNING: "bd_yellow",
-Levels.ERROR: "bd_red",
-Levels.FATAL: "bd_background_red",
-}
-logger = Logger(
-    name = "main",
-    level= Levels.ON,
-    colorLevel=colorLevel,
-)
-# 别忘了要添加至少一个handler,不然无法发挥作用
-console = StreamHandler()
-# 设置格式
-formats = Formatter(colorMode=colorMode,fmt="{timestamp} | {level:<7} | {threadName} | {name}.{funcName} | {filename}:{lineno} - {message}")
-
-console.setFormatter(formats)
-logger.addHandler(console)
-
-logger.trace("test")
-logger.debug("test")
-logger.info("test")
-logger.warning("test")
-logger.error("test")
-logger.fatal("test")
-```
-
 # 更新了FileHandler,保证了部分线程安全
 
 ```python
@@ -86,4 +49,29 @@ logger.fatal("fatal message")
 
 # 别忘了显示调用close方法释放资源
 filehandler.close()
+```
+
+# close方法写在了logger中，可以直接调用logger.close()方法来释放资源
+
+```python
+from SparkleLogging import logger
+from SparkleLogging.core._handler import FileHandler
+from SparkleLogging.core._formatter import Formatter
+
+filehandler = FileHandler(filename="test.log", mode="a+")
+fmts = Formatter()
+filehandler.setFormatter(fmts)
+logger.addHandler(filehandler)
+
+logger.trace("Trace message")
+logger.debug("Debug message")
+logger.info("Info message")
+logger.warning("Warning message")
+logger.error("Error message")
+logger.fatal("fatal message")
+
+#可以直接调用logger.close()方法释放资源,但是注意
+# 这个close方法是释放所有的handler的资源比如线程之类的,如果你想要精确控制时机,最好还是手动调用每个handler的close方法
+# fliehandler.close()
+logger.close()
 ```
