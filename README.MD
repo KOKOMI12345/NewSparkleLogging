@@ -28,6 +28,16 @@ logger.fatal("test")
 
 ```
 
+# 添加了addNewLevel方法来提升灵活性
+
+```python
+from SparkleLogging import logger
+
+logger.addNewLevel("test", 25, 91, "bright_magenta")
+
+logger.log(15, "test")
+```
+
 # 更新了FileHandler,保证了部分线程安全
 
 ```python

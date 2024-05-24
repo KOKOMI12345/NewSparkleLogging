@@ -1,7 +1,8 @@
 from SparkleLogging.utils._types import Level , AnyStr
-from SparkleLogging.core._level import Levels, _nameToLevel
+from SparkleLogging.core._level import Levels, _nameToLevel , _levelToName
 from SparkleLogging.core._handler import Handler
-from SparkleLogging.dependencies import threading , stderr , inspect , os
+from SparkleLogging.dependencies import threading , stderr , inspect , os , traceback
+from SparkleLogging.utils._color import _Color
 
 class Logger:
     def __init__(self,
@@ -24,6 +25,9 @@ class Logger:
         self.lock = threading.Lock()
 
     def addHandler(self, handler: Handler) -> None:
+        """
+        添加日志处理器
+        """
         with self.lock:
            self.handlers.add(handler)
 
@@ -41,29 +45,78 @@ class Logger:
                 for handler in self.handlers:
                     handler.handle(self.name, threadName, filename, lineno, funcName, moduleName, message, level, color, **kwargs)
         except Exception as e:
-            stderr.write(f"Error: {e}\n")
+            err_msg = traceback.format_exc()
+            stderr.write(f"{err_msg}\n")
 
     def close(self) -> None:
+        """
+        如果只用StreamHandler,则不需要调用此方法,否则必须调用来确保线程被安全关闭
+        """
         for handler in self.handlers:
             handler.close()
 
+    def addNewLevel(self, name: str, level: Level,colorCode:int,colorName:str) -> None:
+        """
+        添加自定义等级。
+
+        Parameters:
+        - name (str): 自定义等级的名称。
+        - level (Level): 自定义等级的级别。
+        - colorCode (int): 自定义等级的文本颜色代码。
+        - colorName (str): 自定义等级的颜色名称。
+
+        Raises:
+        - Exception: 如果给定的等级名称已经存在，则会引发异常。
+
+        Returns:
+        - None
+
+        Description:
+        此方法允许用户添加自定义的日志等级，以便更好地适应特定需求。用户可以指定自定义等级的名称、级别、文本颜色代码以及颜色名称。添加自定义等级后，系统将根据用户的设置正确地显示和处理这些日志消息。
+
+        Example:
+        ```python
+        logger.addNewLevel("test", 25, 91, "bright_magenta")
+        ```
+
+        In this example, a new custom log level named "test" is added with level 25, text color code 91, and color name "bright_magenta".
+        """
+        # 先判断是否已经有此级别
+        if name in self.avaliable_lvl:
+            raise Exception(f"Level {name} already exists")
+        else:
+            with self.lock:
+               self.avaliable_lvl[name] = level
+               _levelToName[level] = name
+               self.colorLevel[level] = colorName #type: ignore
+               setattr(_Color, colorName, colorCode)
+
     def log(self, level: Level, message: AnyStr, **kwargs) -> None:
+        """
+        记录一个级别为{level}的日志
+        """
         self._log(level, message, self.colorLevel[level], **kwargs) #type: ignore
             
     def trace(self, message: AnyStr, **kwargs) -> None:
+        """ 记录一个级别为trace的日志 """
         self._log(Levels.TRACE, message, self.colorLevel[Levels.TRACE], **kwargs) # type: ignore
 
     def debug(self, message: AnyStr, **kwargs) -> None:
+        """ 记录一个级别为debug的日志 """
         self._log(Levels.DEBUG, message, self.colorLevel[Levels.DEBUG], **kwargs) # type: ignore
 
     def info(self, message: AnyStr, **kwargs) -> None:
+        """ 记录一个级别为infomation的日志 """
         self._log(Levels.INFO, message, self.colorLevel[Levels.INFO], **kwargs) # type: ignore
 
     def warning(self, message: AnyStr, **kwargs) -> None:
+        """ 记录一个级别为warning的日志 """
         self._log(Levels.WARNING, message, self.colorLevel[Levels.WARN], **kwargs) # type: ignore
 
     def error(self, message: AnyStr, **kwargs) -> None:
+        """ 记录一个级别为error的日志 """
         self._log(Levels.ERROR, message, self.colorLevel[Levels.ERROR], **kwargs) # type: ignore
 
     def fatal(self, message: AnyStr, **kwargs) -> None:
+        """ 记录一个级别为fatal的日志 """
         self._log(Levels.FATAL, message, self.colorLevel[Levels.FATAL], **kwargs) # type: ignore

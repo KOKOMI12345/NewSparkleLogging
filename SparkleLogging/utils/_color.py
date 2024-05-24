@@ -26,4 +26,4 @@ class Color:
 
 if __name__ == '__main__':
     test = Color.render("test","bd_background_red")
-    print(test)
+    print(_Color.__dict__)
