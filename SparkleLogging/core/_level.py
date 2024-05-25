@@ -14,7 +14,7 @@ class Levels:
     ERROR = 5
     FATAL = 6
     CRITICAL = FATAL
-    OFF = 7
+    OFF = float("inf")
 
 _levelToName = {
     Levels.TRACE: "TRACE",

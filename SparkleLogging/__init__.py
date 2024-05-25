@@ -1,6 +1,8 @@
 from SparkleLogging.core._manager import LogManager
 from SparkleLogging.core._level import Levels
 
+__version__ = "1.0.1"
+
 logger = LogManager.GetLogger("test",Levels.ON,True)
 
 """

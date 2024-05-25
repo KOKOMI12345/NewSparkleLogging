@@ -30,6 +30,9 @@ class Handler:
         self.log_msg: str = ""
         self.getLevel = _levelToName
 
+    def setLevel(self, level: Level) -> None:
+        self.level = level
+
     def setFormatter(self, formatter: Formatter) -> None:
         self.formatter = formatter
 
@@ -48,9 +51,10 @@ class Handler:
         level: Level,
         color: str,
     ) -> None:
+        
         if self.formatter is None:
             raise Exception("Formatter not set")
-        
+
         formatted_msg = self.formatter.format(name, threadName,filename,lineno,funcName,moduleName, message, level, color)
         
         return formatted_msg #type: ignore
@@ -96,6 +100,8 @@ class FileHandler(Handler):
                     self.queue.task_done()
                 except queue.Empty:
                     pass
+                except Exception as e:
+                    stderr.write(f"{e}\n")
 
     def __del__(self) -> None:
         self.close()
@@ -103,3 +109,9 @@ class FileHandler(Handler):
     def close(self) -> None:
         self.stop_event.set()
         self.writeThread.join()  # 等待写入线程退出
+
+class RotatingFileHandler:
+    """
+    日志文件按大小轮换写入器
+    """
+    pass

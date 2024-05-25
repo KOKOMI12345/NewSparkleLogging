@@ -55,6 +55,22 @@ class Logger:
         for handler in self.handlers:
             handler.close()
 
+    def setLevel(self,level:Level):
+        """
+        设置日志等级
+        """
+        if level in _levelToName:
+            with self.lock:
+                if _levelToName[level] == "OFF":
+                    self.level = Levels.OFF
+                else:
+                    if level < Levels.OFF:
+                        self.level = level
+                    else:
+                        raise Exception(f"Level {level} should be less than OFF level")
+        else:
+            raise Exception(f"Level {level} not found")
+
     def addNewLevel(self, name: str, level: Level,colorCode:int,colorName:str) -> None:
         """
         添加自定义等级。
@@ -84,6 +100,8 @@ class Logger:
         # 先判断是否已经有此级别
         if name in self.avaliable_lvl:
             raise Exception(f"Level {name} already exists")
+        elif level in _levelToName:
+            raise Exception(f"your Level value is same as my logging lib`s level: {_levelToName[level]}")
         else:
             with self.lock:
                self.avaliable_lvl[name] = level

@@ -8,7 +8,8 @@
 
 # CAUTION
 
-注意，毕竟这个日志库是我从底层开始写起来的，多线程，多进程，异步环境安全我无法保证绝对的安全
+注意，虽然我在需要共享资源的地方使用了 "with lock" 来确保线程安全，但这个日志库是我从底层开始编写的，
+我无法绝对保证在多线程、多进程或异步环境中的绝对安全性。如果在特定环境下遇到问题，请务必审慎考虑并进行适当的调整。
 
 # Get started
 
@@ -28,14 +29,32 @@ logger.fatal("test")
 
 ```
 
+# 更新了setLevel接口用于设置日志级别过滤
+
+- 同时修复了一个addNewLevel可能会覆盖自己日志库定义等级的bug
+
+```python
+from SparkleLogging import logger
+from SparkleLogging.core._level import Levels
+
+logger.setLevel(Levels.INFO)
+
+logger.trace("Trace message") # 过滤
+logger.debug("Debug message") # 过滤
+logger.info("Info message")
+logger.warning("Warning message")
+logger.error("Error message")
+logger.fatal("fatal message")
+
 # 添加了addNewLevel方法来提升灵活性
 
 ```python
 from SparkleLogging import logger
 
-logger.addNewLevel("test", 25, 91, "bright_magenta")
+TEST = 25
+logger.addNewLevel("test", TEST, 91, "bright_magenta")
 
-logger.log(15, "test")
+logger.log(TEST, "test")
 ```
 
 # 更新了FileHandler,保证了部分线程安全
