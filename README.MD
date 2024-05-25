@@ -47,6 +47,7 @@ logger.error("Error message")
 logger.fatal("fatal message")
 
 # 添加了addNewLevel方法来提升灵活性
+```
 
 ```python
 from SparkleLogging import logger
