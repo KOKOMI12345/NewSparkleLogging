@@ -1,10 +1,10 @@
-# SparkleLogging日志库 [new]
+# NsparkleLog日志库
 
-![Sparkle!](picture_pixiv_116702098_0.jpg)
+![Sparkle!](https://github.com/KOKOMI12345/NewSparkleLogging/blob/main/picture_pixiv_116702098_0.jpg)
 
 ## 描述
 
-新的 SparkleLogging日志库是从底层开始写起来的,并没有基于logging标准库往上搭建,所以功能暂时不完善,
+原来SparkleLogging日志库的新版,新的SparkleLogging日志库是从底层开始写起来的,并没有基于logging标准库往上搭建,所以功能暂时不完善。
 
 # CAUTION
 
@@ -46,8 +46,10 @@ logger.warning("Warning message")
 logger.error("Error message")
 logger.fatal("fatal message")
 
-# 添加了addNewLevel方法来提升灵活性
+
 ```
+
+# 添加了addNewLevel方法来提升灵活性
 
 ```python
 from SparkleLogging import logger
