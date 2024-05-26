@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
-from SparkleLogging import __version__
+from NsparkleLog import __version__
 
 setup(
-    name='SparkleLogging-new',
+    name='NsparkleLog',
     version=__version__,
     packages=find_packages(),
     author='花火official',
