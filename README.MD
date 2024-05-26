@@ -16,7 +16,7 @@
 一般来说，你只需要简单的
 
 ```python
-from SparkleLogging import logger
+from NsparkleLog import logger
 
 # 就可以开始记录日志
 
@@ -34,8 +34,8 @@ logger.fatal("test")
 - 同时修复了一个addNewLevel可能会覆盖自己日志库定义等级的bug
 
 ```python
-from SparkleLogging import logger
-from SparkleLogging.core._level import Levels
+from NsparkleLog import logger
+from NsparkleLog.core._level import Levels
 
 logger.setLevel(Levels.INFO)
 
@@ -52,7 +52,7 @@ logger.fatal("fatal message")
 # 添加了addNewLevel方法来提升灵活性
 
 ```python
-from SparkleLogging import logger
+from NsparkleLog import logger
 
 TEST = 25
 logger.addNewLevel("test", TEST, 91, "bright_magenta")
@@ -63,9 +63,9 @@ logger.log(TEST, "test")
 # 更新了FileHandler,保证了部分线程安全
 
 ```python
-from SparkleLogging import logger
-from SparkleLogging.core._handler import FileHandler
-from SparkleLogging.core._formatter import Formatter
+from NsparkleLog import logger
+from NsparkleLog.core._handler import FileHandler
+from NsparkleLog.core._formatter import Formatter
 
 filehandler = FileHandler(filename="test.log", mode="a+")
 fmts = Formatter() #懒得设置格式直接这样也行
@@ -86,9 +86,9 @@ filehandler.close()
 # close方法写在了logger中，可以直接调用logger.close()方法来释放资源
 
 ```python
-from SparkleLogging import logger
-from SparkleLogging.core._handler import FileHandler
-from SparkleLogging.core._formatter import Formatter
+from NsparkleLog import logger
+from NsparkleLog.core._handler import FileHandler
+from NsparkleLog.core._formatter import Formatter
 
 filehandler = FileHandler(filename="test.log", mode="a+")
 fmts = Formatter()
