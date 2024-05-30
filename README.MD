@@ -26,8 +26,10 @@ logger.info("test")
 logger.warning("test")
 logger.error("test")
 logger.fatal("test")
-
 ```
+
+[2024/5/30 21:33]
+# 日志库不用再需要显示调用close方法来释放资源,主线程退出后会自动释放资源
 
 # 更新了setLevel接口用于设置日志级别过滤
 
@@ -83,7 +85,7 @@ logger.fatal("fatal message")
 filehandler.close()
 ```
 
-# close方法写在了logger中，可以直接调用logger.close()方法来释放资源
+# close方法写在了logger中，可以直接调用logger.close()方法来释放资源 [depercated]
 
 ```python
 from NsparkleLog import logger
