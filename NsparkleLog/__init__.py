@@ -1,7 +1,7 @@
 from NsparkleLog.core._manager import LogManager
 from NsparkleLog.core._level import Levels
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 logger = LogManager.GetLogger("main",Levels.ON,True)
 

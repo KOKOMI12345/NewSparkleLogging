@@ -3,7 +3,7 @@
 """
 依赖文件
 """
-from typing import TypeVar
+from typing import TypeVar, NewType , Union
 from sys import stderr , stdin , stdout
 import multiprocessing , threading
 import asyncio , re

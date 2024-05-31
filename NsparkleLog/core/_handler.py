@@ -100,11 +100,11 @@ class FileHandler(Handler):
 
     def writeToFile(self) -> None:
         with open(self.filename, self.mode, encoding=self.encoding) as f:
-            while isMainThreadAlive():
+            while True:
                 try:
                     string = self.queue.get(timeout=1)  # 使用timeout来避免忙等
                     with self.lock:
-                        f.write(string + "\n")
+                        f.write(f"{string}\n")
                         f.flush()
                     self.queue.task_done()
                 except queue.Empty:
@@ -116,7 +116,7 @@ class FileHandler(Handler):
                     stderr.write(f"{e}\n")
         
 
-class RotatingFileHandler:
+class RotatingFileHandler(Handler):
     """
     日志文件按大小轮换写入器
     """
