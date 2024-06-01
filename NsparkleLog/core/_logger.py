@@ -1,9 +1,11 @@
 from NsparkleLog.utils._types import Level , AnyStr
 from NsparkleLog.core._level import Levels, _nameToLevel , _levelToName
 from NsparkleLog.core._handler import Handler
-from NsparkleLog.dependencies import threading , stderr , inspect , os , traceback
+from NsparkleLog.dependencies import threading , stderr , inspect , os , traceback , multiprocessing
 from NsparkleLog.utils._color import _Color
+from NsparkleLog.core._formatter import Formatter
 from NsparkleLog.plugins.helpers import Deprecated
+from NsparkleLog.core._handler import StreamHandler
 
 class Logger:
     def __init__(self,
@@ -32,22 +34,36 @@ class Logger:
         with self.lock:
            self.handlers.add(handler)
 
+    def __getLogMsg(self) -> tuple[str,str,int,str,str,int,str]:
+        threadName = threading.current_thread().name
+        frame = inspect.currentframe().f_back.f_back.f_back  # type: ignore  
+        filename = os.path.relpath(frame.f_code.co_filename, start=os.getcwd()) # type: ignore
+        lineno = frame.f_lineno # type: ignore
+        moduleName = inspect.getmodule(frame).__name__ # type: ignore
+        funcName = frame.f_code.co_name # type: ignore
+        ProcessID = os.getpid()
+        ProcessName = multiprocessing.current_process().name
+        return threadName , filename , lineno , funcName , moduleName , ProcessID , ProcessName
+
     def _log(self, level: Level, message: AnyStr, color: str, **kwargs) -> None:
         if not self.handlers:
             raise Exception("No handlers found")
         try:
             if level >= self.level:
-                threadName = threading.current_thread().name
-                frame = inspect.currentframe().f_back.f_back  # type: ignore  
-                filename = os.path.relpath(frame.f_code.co_filename, start=os.getcwd()) # type: ignore
-                lineno = frame.f_lineno # type: ignore
-                moduleName = inspect.getmodule(frame).__name__ # type: ignore
-                funcName = frame.f_code.co_name # type: ignore
+                threadName , filename , lineno , funcName , moduleName , ProcessID , ProcessName = self.__getLogMsg()
                 for handler in self.handlers:
-                    handler.handle(self.name, threadName, filename, lineno, funcName, moduleName, message, level, color, **kwargs)
+                    handler.handle(self.name, threadName, filename, lineno, funcName, moduleName,ProcessID,ProcessName, message, level, color, **kwargs)
         except Exception as e:
             err_msg = traceback.format_exc()
             stderr.write(f"{err_msg}\n")
+
+    def setFormatter(self, formatter: Formatter) -> None:
+        """
+        设置日志格式
+        """
+        for handler in self.handlers:
+            if isinstance(handler, StreamHandler):
+                handler.setFormatter(formatter)
 
     def setLevel(self,level:Level):
         """
@@ -124,10 +140,16 @@ class Logger:
     def warning(self, message: AnyStr, **kwargs) -> None:
         """ 记录一个级别为warning的日志 """
         self._log(Levels.WARNING, message, self.colorLevel[Levels.WARN], **kwargs) # type: ignore
+    
+    def warn(self,message: AnyStr, **kwargs) -> None:
+        return self.warning(message, **kwargs)
 
     def error(self, message: AnyStr, **kwargs) -> None:
         """ 记录一个级别为error的日志 """
         self._log(Levels.ERROR, message, self.colorLevel[Levels.ERROR], **kwargs) # type: ignore
+
+    def critical(self, message: AnyStr, **kwargs) -> None:
+        return self.fatal(message, **kwargs)
 
     def fatal(self, message: AnyStr, **kwargs) -> None:
         """ 记录一个级别为fatal的日志 """

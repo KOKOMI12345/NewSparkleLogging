@@ -2,6 +2,7 @@ from NsparkleLog.dependencies import stdout, stderr , threading , queue ,os
 from NsparkleLog.utils._types import Stream, AnyStr, Level
 from NsparkleLog.core._level import Levels, _levelToName
 from NsparkleLog.core._formatter import Formatter
+from NsparkleLog._env import current_lock
 
 def isMainThreadAlive():
     return threading.main_thread().is_alive()
@@ -52,6 +53,8 @@ class Handler:
         lineno: int,
         funcName: str,
         moduleName: str,
+        ProcessId: int,
+        ProcessName: str,
         message: AnyStr,
         level: Level,
         color: str,
@@ -61,7 +64,7 @@ class Handler:
         if self.formatter is None:
             raise Exception("Formatter not set")
 
-        formatted_msg = self.formatter.format(name, threadName,filename,lineno,funcName,moduleName, message, level, color)
+        formatted_msg = self.formatter.format(name, threadName,filename,lineno,funcName,moduleName,ProcessId, ProcessName, message, level, color)
         
         return formatted_msg #type: ignore
 
@@ -69,9 +72,11 @@ class StreamHandler(Handler, Writer):
     def __init__(self, error: bool = False) -> None:
         super().__init__()
         
-    def handle(self, name: str, threadName: str,filename: str, lineno: int, funcName: str, moduleName: str, message: AnyStr, level: Level, color: str) -> None:
-        string =  super().handle(name, threadName,filename, lineno, funcName, moduleName, message, level, color)
+    def handle(self, name: str, threadName: str,filename: str, lineno: int, funcName: str, moduleName: str,ProcessId: int, ProcessName: str, message: AnyStr, level: Level, color: str) -> None:
+        string =  super().handle(name, threadName,filename, lineno, funcName, moduleName,ProcessId, ProcessName, message, level, color)
         if level >= self.level:
+           if level >= Levels.ERROR:
+               self.write(string, error=True)
            self.write(string, error=False)
         return
 
@@ -87,33 +92,35 @@ class FileHandler(Handler):
         self.filename = filename
         self.mode = mode
         self.encoding = encoding
-        self.lock = threading.Lock()
+        self.lock = current_lock
         self.queue = queue.Queue()
         self.writeThread = threading.Thread(target=self.writeToFile)
         self.writeThread.start()
 
-    def handle(self, name: str, threadName: str, filename: str, lineno: int, funcName: str, moduleName: str, message: AnyStr, level: Level, color: str) -> None:
-        string = super().handle(name, threadName, filename, lineno, funcName, moduleName, message, level, color)
+    def handle(self, name: str, threadName: str, filename: str, lineno: int, funcName: str, moduleName: str,ProcessId: int, ProcessName: str, message: AnyStr, level: Level, color: str) -> None:
+        string =  super().handle(name, threadName,filename, lineno, funcName, moduleName,ProcessId, ProcessName, message, level, color)
         if level >= self.level:
            self.queue.put(string)
         return
 
     def writeToFile(self) -> None:
-        with open(self.filename, self.mode, encoding=self.encoding) as f:
-            while True:
-                try:
-                    string = self.queue.get(timeout=1)  # 使用timeout来避免忙等
-                    with self.lock:
-                        f.write(f"{string}\n")
-                        f.flush()
-                    self.queue.task_done()
-                except queue.Empty:
-                    if  not isMainThreadAlive():
-                        break
-                    else:
-                        continue
-                except Exception as e:
-                    stderr.write(f"{e}\n")
+        if isinstance(self.lock, threading.Lock):
+            with open(self.filename, self.mode, encoding=self.encoding) as f:
+                while True:
+                    try:
+                        string = self.queue.get(timeout=1)  # 使用timeout来避免忙等
+                        with self.lock: #type: ignore
+                            f.write(f"{string}\n")
+                            f.flush()
+                        self.queue.task_done()
+                    except queue.Empty:
+                        if  not isMainThreadAlive():
+                            break
+                        else:
+                            continue
+                    except Exception as e:
+                        stderr.write(f"{e}\n")
+        raise RuntimeError("lock is not a threading.Lock")
         
 
 class RotatingFileHandler(Handler):

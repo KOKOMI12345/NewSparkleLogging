@@ -5,6 +5,24 @@ from NsparkleLog.utils._color import Color
 from NsparkleLog._env import default_format
 
 class Formatter:
+    """
+    ### 支持的格式占位符: 
+     - {name}: 日志记录器名字
+     - {threadName}: 线程名字
+     - {filename}: 文件名
+     - {lineno}: 行号
+     - {funcName}: 函数名
+     - {moduleName}: 模块名
+     - {ProcessId}: 进程ID
+     - {ProcessName}: 进程名
+     - {message}: 消息
+     - {level}: 日志级别
+     - {localtime}: 本地时间
+     - {msec}: 本地时间毫秒
+     - {utcmsec}: UTC时间毫秒
+     - {utctime}: UTC时间
+     - {timestamp}: 时间戳(本地时间)
+    """
     def __init__(self,colorMode:bool = False, fmt: str = default_format) -> None:
         self._fmt = fmt
         self.colorMode = colorMode
@@ -16,6 +34,8 @@ class Formatter:
         lineno: int,
         funcName: str,
         moduleName: str,
+        ProcessId: int,
+        ProcessName: str,
         message: AnyStr, 
         level: Level, 
         color: str,
@@ -33,6 +53,8 @@ class Formatter:
             level=_levelToName[level],
             threadName=threadName,
             filename=filename,
+            ProcessId=ProcessId,
+            ProcessName=ProcessName,
             lineno=lineno,
             funcName=funcName,
             moduleName=moduleName,
