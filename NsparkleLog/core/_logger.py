@@ -6,6 +6,7 @@ from NsparkleLog.utils._color import _Color
 from NsparkleLog.core._formatter import Formatter
 from NsparkleLog.plugins.helpers import Deprecated
 from NsparkleLog.core._handler import StreamHandler
+from NsparkleLog.core._excformat import ExtractException
 
 class Logger:
     def __init__(self,
@@ -124,6 +125,13 @@ class Logger:
         记录一个级别为{level}的日志
         """
         self._log(level, message, self.colorLevel[level], **kwargs) #type: ignore
+
+    def exception(self, exception: Exception, **kwargs) -> None:
+        """
+        记录一个异常
+        """
+        err_msg = ExtractException(type(exception), exception, exception.__traceback__)
+        self._log(Levels.ERROR, err_msg, self.colorLevel[Levels.ERROR], **kwargs) #type: ignore
             
     def trace(self, message: AnyStr, **kwargs) -> None:
         """ 记录一个级别为trace的日志 """

@@ -26,7 +26,7 @@ def format_stack_trace(exctype, value, tb, nested=False) -> str:
     
     return exception_info
 
-def ExcractException(exctype, value, tb) -> Optional[str]:
+def ExtractException(exctype, value, tb) -> Optional[str]:
     # 获取回溯信息并格式化为字符串
     tb_str = format_stack_trace(exctype, value, tb)
     
