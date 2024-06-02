@@ -6,7 +6,7 @@
 
 原来SparkleLogging日志库的新版,新的SparkleLogging日志库是从底层开始写起来的,并没有基于logging标准库往上搭建,所以功能暂时不完善。
 
-# Get started
+### Get started
 
 一般来说，你只需要简单的
 
@@ -24,6 +24,7 @@ logger.fatal("test")
 ```
 
 [2024/6/2 14:01]
+
 ### 更新了logger.exception接口
 
 ```python
@@ -35,12 +36,14 @@ from NsparkleLog import logger
 ```
 
 [2024/6/1 18:51]
+
 ### 完善多线程，多进程，异步的安全
 
 [2024/5/30 21:33]
-# 日志库不用再需要显示调用close方法来释放资源,主线程退出后会自动释放资源
 
-# 更新了setLevel接口用于设置日志级别过滤
+### 日志库不用再需要显示调用close方法来释放资源,主线程退出后会自动释放资源
+
+### 更新了setLevel接口用于设置日志级别过滤
 
 - 同时修复了一个addNewLevel可能会覆盖自己日志库定义等级的bug
 
@@ -60,7 +63,7 @@ logger.fatal("fatal message")
 
 ```
 
-# 添加了addNewLevel方法来提升灵活性
+### 添加了addNewLevel方法来提升灵活性
 
 ```python
 from NsparkleLog import logger
@@ -71,7 +74,7 @@ logger.addNewLevel("test", TEST, 91, "bright_magenta")
 logger.log(TEST, "test")
 ```
 
-# 更新了FileHandler,保证了部分线程安全
+### 更新了FileHandler,保证了部分线程安全
 
 ```python
 from NsparkleLog import logger
@@ -94,7 +97,7 @@ logger.fatal("fatal message")
 filehandler.close()
 ```
 
-# close方法写在了logger中，可以直接调用logger.close()方法来释放资源 [depercated]
+### close方法写在了logger中，可以直接调用logger.close()方法来释放资源 [depercated]
 
 ```python
 from NsparkleLog import logger
