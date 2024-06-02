@@ -23,6 +23,17 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/2 14:01]
+### 更新了logger.exception接口
+
+```python
+from NsparkleLog import logger
+    try:
+        raise Exception
+    except Exception as e:
+        logger.exception(e)
+```
+
 [2024/6/1 18:51]
 ### 完善多线程，多进程，异步的安全
 
