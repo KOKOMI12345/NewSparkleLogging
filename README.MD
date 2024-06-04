@@ -23,6 +23,28 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/4 21:52]
+
+### 更新trace方法
+
+- trace方法现在支持withStackTrace参数,如果为True,则包含堆栈跟踪,否则只记录信息
+
+```python
+from NsparkleLog import logger
+
+logger.trace("This is a trace message",withStackTrace=True)
+
+```
+
+```bash
+output:
+
+2024-06-04 21:50:44.840 | TRACE   | MainProcess.MainThread | main.<module> | asynctest.py:3 - This is a trace message
+Stack Trace:
+   at <module> in (f:\python_play\NsparkleLog\asynctest.py:3)
+
+```
+
 [2024/6/2 14:01]
 
 ### 更新了logger.exception接口
