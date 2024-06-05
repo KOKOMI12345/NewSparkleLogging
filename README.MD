@@ -23,6 +23,33 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/5 22:14]
+
+### 更新了类似loguru的catch装饰器
+
+- 现在可以用@logger.catch来捕获函数中的异常并打印堆栈
+
+```python
+from NsparkleLog import logger
+
+@logger.catch
+def test():
+    raise Exception("this is a test exception")
+
+test()
+```
+
+```bash
+output:
+
+2024-06-05 22:13:03.793 | ERROR   | MainProcess.MainThread | main.wrapper | NsparkleLog\core\_logger.py:60 - 发生异常:
+An Fatal Error has occurred: Exception: This is an exception
+Traceback (most recent call last):
+  at wrapper in (f:\python_play\NsparkleLog\NsparkleLog\core\_logger.py:58)
+  at test in (f:\python_play\NsparkleLog\asynctest.py:12)
+
+```
+
 [2024/6/4 21:52]
 
 ### 更新trace方法
