@@ -23,6 +23,32 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/21 17:26]
+
+### 更新了一个config接口用于配置日志
+
+- 用法
+
+```python
+from NsparkleLog import LogManager , Levels , StreamHandler
+
+LogManager.config(
+    handlers=[StreamHandler()],
+    level=Levels.TRACE,
+    colorMode=True,
+)
+
+logger = LogManager.GetLogger("test")
+
+logger.trace("Hello, World!")
+logger.debug("Hello, World!")
+logger.info("Hello, World!")
+logger.warning("Hello, World!")
+logger.error("Hello, World!")
+logger.fatal("Hello, World!")
+
+```
+
 [2024/6/5 22:14]
 
 ### 更新了类似loguru的catch装饰器
@@ -123,7 +149,7 @@ logger.addNewLevel("test", TEST, 91, "bright_magenta")
 logger.log(TEST, "test")
 ```
 
-### 更新了FileHandler,保证了部分线程安全
+### FileHandler用法
 
 ```python
 from NsparkleLog import logger
@@ -141,32 +167,4 @@ logger.info("Info message")
 logger.warning("Warning message")
 logger.error("Error message")
 logger.fatal("fatal message")
-
-# 别忘了显示调用close方法释放资源
-filehandler.close()
-```
-
-### close方法写在了logger中，可以直接调用logger.close()方法来释放资源 [depercated]
-
-```python
-from NsparkleLog import logger
-from NsparkleLog.core._handler import FileHandler
-from NsparkleLog.core._formatter import Formatter
-
-filehandler = FileHandler(filename="test.log", mode="a+")
-fmts = Formatter()
-filehandler.setFormatter(fmts)
-logger.addHandler(filehandler)
-
-logger.trace("Trace message")
-logger.debug("Debug message")
-logger.info("Info message")
-logger.warning("Warning message")
-logger.error("Error message")
-logger.fatal("fatal message")
-
-#可以直接调用logger.close()方法释放资源,但是注意
-# 这个close方法是释放所有的handler的资源比如线程之类的,如果你想要精确控制时机,最好还是手动调用每个handler的close方法
-# fliehandler.close()
-logger.close()
 ```
