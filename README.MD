@@ -23,6 +23,30 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/22 15:26]
+
+### 更新了NsparkleLogHandler类用于转发logging日志消息到NsparkleLog日志库
+
+- 用法如下
+
+```python
+from NsparkleLog import NsparkleLogHandler
+
+import logging
+
+logger = logging.getLogger("test")
+
+handler = NsparkleLogHandler()
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+
+logger.debug("debug")
+logger.info("info")
+logger.warning("warning")
+logger.error("error")
+logger.critical("critical")
+```
+
 [2024/6/21 17:26]
 
 ### 更新了一个config接口用于配置日志
