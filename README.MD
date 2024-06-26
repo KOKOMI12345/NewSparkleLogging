@@ -23,6 +23,52 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/26 21:32]
+
+### 更新了HTML标签字体渲染
+
+- 用法如下,这里用 cyan 作为示例
+
+```python
+from NsparkleLog import logger
+
+logger.trace("<cyan>Hello World</cyan>")
+logger.debug("<cyan>Hello World</cyan>")
+logger.info("<cyan>Hello World</cyan>")
+logger.warning("<cyan>Hello World</cyan>")
+logger.error("<cyan>Hello World</cyan>")
+logger.fatal("<cyan>Hello World</cyan>")
+```
+
+- 你也可以用 Color 类来查看所有自带的颜色
+
+```python
+from NsparkleLog import Color
+
+print(Color.GetAvaliableColor())
+```
+
+- 当然了,也允许你动态的添加颜色
+
+```python
+from NsparkleLog import Color
+Color.regColor(50,"test_color")
+```
+
+- 如果你有自定义的等级想渲染注册好的颜色或者使用原来的颜色,不要忘了映射噢~
+
+```python
+from NsparkleLog import LevelColor , logger
+
+LOGG = 25
+
+logger.addNewLevel("LOGG",LOGG)
+
+LevelColor.mapLevelToColor(LOGG,"cyan")
+
+logger.log(LOGG,"hello world")
+```
+
 [2024/6/22 15:26]
 
 ### 更新了NsparkleLogHandler类用于转发logging日志消息到NsparkleLog日志库
