@@ -23,6 +23,10 @@ logger.error("test")
 logger.fatal("test")
 ```
 
+[2024/6/28 21:05]
+
+### 修复颜色渲染bug
+
 [2024/6/26 21:32]
 
 ### 更新了HTML标签字体渲染
