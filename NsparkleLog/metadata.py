@@ -1,0 +1,8 @@
+
+"""
+项目包的元数据
+"""
+
+__version__ = "1.1.6.post2"
+__author__ = "花火official"
+__packageName__ = "NsparkleLog"
