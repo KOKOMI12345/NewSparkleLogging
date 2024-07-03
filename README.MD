@@ -4,9 +4,84 @@
 
 ## 描述
 
-原来SparkleLogging日志库的新版,新的SparkleLogging日志库是从底层开始写起来的,并没有基于logging标准库往上搭建,所以功能暂时不完善。
+NsparkleLog 是一个高性能的日志库，设计之初就注重性能和多线程支持。与其他日志库相比，NsparkleLog 在处理大量日志条目时表现出色。
 
-### Get started
+## 性能对比
+
+我们对比了 NsparkleLog 和 Loguru 的性能，结果显示：
+
+- **NsparkleLog**:
+  - 总耗时：2.77 秒
+  - 平均每条日志耗时：0.000277 秒
+- **Loguru**:
+  - 总耗时：4.06 秒
+  - 平均每条日志耗时：0.000406 秒
+
+这意味着 NsparkleLog 的性能比 Loguru 快约 36%。
+
+## 主要特点
+
+- 多线程支持：使用队列和线程高效处理并发日志记录
+- 自定义锁机制：确保线程安全的同时最大化性能
+- 从底层实现：避免对第三方库的依赖，进一步优化性能
+
+## 安装
+
+```bash
+pip install NsparkleLog
+```
+
+## 测试质疑
+
+- 如果您对测试结果感到质疑,可以自己修改下列测试脚本
+
+```python
+
+from NsparkleLog import logger as NsparkleLogger
+from loguru import logger as LoguruLogger
+import time
+
+# 测试参数
+num_messages = 10000
+test_message = "This is a test log message."
+
+# 测试 NsparkleLog
+nsparkle_times = []
+for i in range(num_messages):
+    start_time = time.time()
+    NsparkleLogger.info(test_message)
+    end_time = time.time()
+    nsparkle_times.append(end_time - start_time)
+nsparkle_duration = sum(nsparkle_times)
+nsparkle_avg_time = nsparkle_duration / num_messages
+
+# 测试 Loguru
+loguru_times = []
+for i in range(num_messages):
+    start_time = time.time()
+    LoguruLogger.info(test_message)
+    end_time = time.time()
+    loguru_times.append(end_time - start_time)
+loguru_duration = sum(loguru_times)
+loguru_avg_time = loguru_duration / num_messages
+
+# 输出结果
+print(f"NsparkleLog total duration: {nsparkle_duration:.2f} seconds")
+print(f"NsparkleLog average time per message: {nsparkle_avg_time:.6f} seconds")
+
+print(f"Loguru total duration: {loguru_duration:.2f} seconds")
+print(f"Loguru average time per message: {loguru_avg_time:.6f} seconds")
+```
+
+## 下载总计
+
+[![总下载量:](https://static.pepy.tech/badge/NsparkleLog)](https://pepy.tech/project/NsparkleLog)
+
+[![每月下载量:](https://static.pepy.tech/badge/NsparkleLog/month)](https://pepy.tech/project/NsparkleLog)
+
+[![每周下载量:](https://static.pepy.tech/badge/NsparkleLog/week)](https://pepy.tech/project/NsparkleLog)
+
+### 快速开始
 
 一般来说，你只需要简单的
 
